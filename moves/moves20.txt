@@ -1,0 +1,3 @@
+e4 e s e done
+e4 s s w done
+e4 n e n n e s e n s e n quit

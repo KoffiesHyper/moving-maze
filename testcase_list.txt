@@ -1,0 +1,20 @@
+--------------------------------------------------
+First hand-in:
+
+1 to 3: Only move is "quit".
+4 to 6: Rotate the floating tile a few times, insert it, then quit.
+7 to 9: A full turn (slide + move) then quit.
+10 to 12: Four full turns (slide+move+done), then quit.
+13 to 20: Games with illegal moves.
+
+--------------------------------------------------
+Second hand-in:
+
+21 to 23: Full games (a player wins) with relic collections.
+22 features adventurers being pushed off the maze.
+23 features relics being pushed off the maze.
+
+--------------------------------------------------
+Third hand-in:
+
+24 to 26: Full games with pathfinding (but with the same overall moves as 21 to 23).  Some inaccessible paths are attempted.

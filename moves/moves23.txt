@@ -1,0 +1,10 @@
+r n4 e
+r w2 w w s w
+r s2 e e e
+w2 w w
+w2 w n n done
+r w2 s
+r s2 w w
+s2 e e n n w w
+w2 e e s e e
+s2 n e e e

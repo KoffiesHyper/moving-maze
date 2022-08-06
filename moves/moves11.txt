@@ -1,0 +1,5 @@
+l l w2 e s s s done
+r r w4 s w s w s done
+s2 n e e done
+e2 w w n n n n done
+quit

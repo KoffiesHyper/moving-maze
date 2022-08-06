@@ -1,0 +1,5 @@
+e2 done
+w2 e2 done
+w2 s2 done
+n2 s2 done
+quit

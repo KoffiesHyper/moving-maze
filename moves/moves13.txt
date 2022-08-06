@@ -1,0 +1,1 @@
+s1 s3 w1 w3 n1 n3 e1 e3 quit

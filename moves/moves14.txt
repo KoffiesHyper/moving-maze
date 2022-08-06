@@ -1,0 +1,2 @@
+e2 done
+w2 quit

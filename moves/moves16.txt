@@ -1,0 +1,2 @@
+l w2 s e e done
+w4 w s w w n quit
