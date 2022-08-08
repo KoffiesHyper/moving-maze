@@ -101,7 +101,7 @@ public class MovingMaze {
                     return;
                 }
 
-                if (Integer.parseInt(String.valueOf(input.toCharArray()[1])) % 2 != 0) {
+                if (input.length() > 1 && Integer.parseInt(String.valueOf(input.toCharArray()[1])) % 2 != 0) {
                     StdOut.println("Cannot slide into odd positions.");
                     continue;
                 }

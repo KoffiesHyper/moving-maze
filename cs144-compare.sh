@@ -14,7 +14,7 @@ rm -rf *.class
 
 # Compile all .java files
 myecho "Compiling..."
-javac *.java
+javac -encoding utf8 *.java
 myecho "Compiled successfully."
 
 myecho "Start of output comparison (your program's output is on the left, the correct output is on the right)"
