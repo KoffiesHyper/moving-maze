@@ -325,12 +325,12 @@ public class GameBoard {
         System.out.println();
 
         for (int r = 0; r < boardText.length; r++) {
-            StdOut.println(boardText[r]);
+            System.out.println(boardText[r]);
         }
         System.out.println();
 
         for (int r = 0; r < floatingTile.length; r++) {
-            StdOut.println(floatingTile[r]);
+            System.out.println(floatingTile[r]);
         }
         System.out.println();
     }

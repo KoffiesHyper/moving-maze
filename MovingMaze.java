@@ -113,11 +113,11 @@ public class MovingMaze {
                     previousSlide = input;
 
                 if (input.equals("r") || input.equals("l")) {
-                    StdOut.print("Rotating " + (input.equals("r") ? "right" : "left"));
+                    StdOut.print("Rotating " + (input.equals("r") ? "right." : "left."));
                     board.rotateFloatingTile(input);
                     board.printGameBoard();
                 } else {
-                    StdOut.print("Inserting at " + input);
+                    StdOut.print("Inserting at " + input + ".");
                     board.insertFloatingTile(input);
                     board.printGameBoard();
                     break;
