@@ -101,13 +101,13 @@ public class GameBoard {
         }
 
         if (!tiles[i][j].tileOpenOnSide(dir)) {
-            StdOut.println("Cannot move " + fullDir + ": no path");
+            StdOut.println("Cannot move " + fullDir + ": no path.");
             return "";
         }
 
         if (dir.equals("e")) {
             if (j == tiles[0].length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "";
             }
 
@@ -115,14 +115,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j + 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "";
             }
         }
 
         if (dir.equals("w")) {
             if (j == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "";
             }
 
@@ -130,14 +130,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j - 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "";
             }
         }
 
         if (dir.equals("n")) {
             if (i == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "";
             }
 
@@ -145,14 +145,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i - 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "";
             }
         }
 
         if (dir.equals("s")) {
             if (i == tiles.length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "";
             }
 
@@ -160,7 +160,7 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i + 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "";
             }
         }

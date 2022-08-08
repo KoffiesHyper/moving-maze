@@ -113,11 +113,11 @@ public class MovingMaze {
                     previousSlide = input;
 
                 if (input.equals("r") || input.equals("l")) {
-                    StdOut.print("Rotating " + (input.equals("r") ? "right." : "left."));
+                    StdOut.println("Rotating " + (input.equals("r") ? "right." : "left."));
                     board.rotateFloatingTile(input);
                     board.printGameBoard();
                 } else {
-                    StdOut.print("Inserting at " + input + ".");
+                    StdOut.println("Inserting at " + input + ".");
                     board.insertFloatingTile(input);
                     board.printGameBoard();
                     break;
@@ -138,11 +138,14 @@ public class MovingMaze {
 
                 if (input.equals("done")) {
                     StdOut.println("End of " + currentPlayer + "'s turn.");
+                    board.printScoreBoard();
                     board.printGameBoard();
                     break;
                 }
 
-                if (board.movePlayer(String.valueOf(currentPlayer.toCharArray()[0]), input).equals("collectedRelic")) {
+                String moveResult = board.movePlayer(String.valueOf(currentPlayer.toCharArray()[0]), input);
+
+                if (moveResult.equals("collectedRelic")) {
                     board.printGameBoard();
                     StdOut.println(currentPlayer + " has collected a relic.");
 
@@ -154,11 +157,12 @@ public class MovingMaze {
                     board.printScoreBoard();
                     board.printGameBoard();
                     break;
-                }
+                } else if (moveResult.equals("success"))
+                    board.printGameBoard();
 
-                board.printGameBoard();
+                int score = board.getPlayerScores()[player - 1];
 
-                if (board.playerAtOrigin(player - 1) && board.getPlayerScores()[player - 1] == k) {
+                if (board.playerAtOrigin(player - 1) && score == k && score > 0) {
                     StdOut.println(currentPlayer + " has won.");
                     board.printScoreBoard();
                     return;
