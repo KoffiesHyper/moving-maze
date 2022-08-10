@@ -137,6 +137,29 @@ public class Tile {
         this.players = players;
     }
 
+    public boolean[] toBooleanArray(){
+        boolean[] bits = new boolean[4];
+        char[] characters = tileEncoding.toCharArray();
+        for(int i = 0; i < 4; i++){
+            bits[i] = characters[i] == '1';
+        }
+        return bits;
+    }
+    
+    public String oppositeDir(String dir) {
+        switch (dir) {
+            case "n":
+                return "s";
+            case "e":
+                return "w";
+            case "s":
+                return "n";
+            case "w":
+                return "e";
+        }
+        return "";
+    }
+
     public String[][] getTextRepresentation() {
         for (int r = 0; r < textRepresentation.length; r++) {
             for (int c = 0; c < textRepresentation[0].length; c++) {

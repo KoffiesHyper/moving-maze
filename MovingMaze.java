@@ -113,11 +113,11 @@ public class MovingMaze {
                     previousSlide = input;
 
                 if (input.equals("r") || input.equals("l")) {
-                    StdOut.println("Rotating " + (input.equals("r") ? "right." : "left."));
+                    StdOut.print("Rotating " + (input.equals("r") ? "right." : "left."));
                     board.rotateFloatingTile(input);
                     board.printGameBoard();
                 } else {
-                    StdOut.println("Inserting at " + input + ".");
+                    StdOut.print("Inserting at " + input + ".");
                     board.insertFloatingTile(input);
                     board.printGameBoard();
                     break;
@@ -138,14 +138,11 @@ public class MovingMaze {
 
                 if (input.equals("done")) {
                     StdOut.println("End of " + currentPlayer + "'s turn.");
-                    board.printScoreBoard();
                     board.printGameBoard();
                     break;
                 }
 
-                String moveResult = board.movePlayer(String.valueOf(currentPlayer.toCharArray()[0]), input);
-
-                if (moveResult.equals("collectedRelic")) {
+                if (board.movePlayer(String.valueOf(currentPlayer.toCharArray()[0]), input).equals("collectedRelic")) {
                     board.printGameBoard();
                     StdOut.println(currentPlayer + " has collected a relic.");
 
@@ -157,12 +154,11 @@ public class MovingMaze {
                     board.printScoreBoard();
                     board.printGameBoard();
                     break;
-                } else if (moveResult.equals("success"))
-                    board.printGameBoard();
+                }
 
-                int score = board.getPlayerScores()[player - 1];
+                board.printGameBoard();
 
-                if (board.playerAtOrigin(player - 1) && score == k && score > 0) {
+                if (board.playerAtOrigin(player - 1) && board.getPlayerScores()[player - 1] == k) {
                     StdOut.println(currentPlayer + " has won.");
                     board.printScoreBoard();
                     return;
@@ -243,28 +239,50 @@ public class MovingMaze {
     }
 
     public static boolean isTileOpenToSide(String tileEncoding, char dir) {
-        return false; // TODO
+        Tile tile = new Tile(tileEncoding);
+        return tile.tileOpenOnSide(String.valueOf(dir));
     }
 
     public static boolean[] rotateTileClockwise(String tileEncoding) {
-        return new boolean[] { false, false, false, false }; // TODO
+        Tile tile = new Tile(tileEncoding);
+        tile.rotate("r");
+        return tile.toBooleanArray();
     }
 
     public static boolean[] rotateTileCounterclockwise(String tileEncoding) {
-        return new boolean[] { false, false, false, false }; // TODO
+        Tile tile = new Tile(tileEncoding);
+        tile.rotate("l");
+        return tile.toBooleanArray();
     }
 
     public static boolean[] slideTileIntoMaze1(String[][] mazeTileEncodings, String floatingTileEncoding,
             String slidingIndicator) {
-        return new boolean[] { false, false, false, false }; // TODO
+
+        GameBoard board = new GameBoard(mazeTileEncodings, floatingTileEncoding, mazeTileEncodings.length,
+                mazeTileEncodings[0].length, 10);
+        board.insertFloatingTile(slidingIndicator);
+        return board.getFloatingTile();
     }
 
     public static boolean canMoveInDirection(String curTileEncoding, String newTileEncoding, char dir) {
-        return false; // TODO
+        Tile tile1 = new Tile(curTileEncoding);
+        Tile tile2 = new Tile(newTileEncoding);
+        return tile1.tileOpenOnSide(String.valueOf(dir))
+                && tile2.tileOpenOnSide(tile2.oppositeDir(String.valueOf(dir)));
     }
 
     public static boolean canMoveAlongPath(String[][] mazeTileEncodings, char[] steps) {
-        return false; // TODO
+        GameBoard board = new GameBoard(
+                mazeTileEncodings, "",
+                mazeTileEncodings.length,
+                mazeTileEncodings[0].length,
+                1);
+
+        for (int i = 0; i < steps.length; i++) {
+            if (board.movePlayer("G", String.valueOf(steps[i])).equals("error"))
+                return false;
+        }
+        return true;
     }
 
     // ----------------------------------------------------------

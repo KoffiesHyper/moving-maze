@@ -101,67 +101,67 @@ public class GameBoard {
         }
 
         if (!tiles[i][j].tileOpenOnSide(dir)) {
-            StdOut.println("Cannot move " + fullDir + ": no path.");
-            return "";
+            StdOut.println("Cannot move " + fullDir + ": no path");
+            return "error";
         }
 
         if (dir.equals("e")) {
             if (j == tiles[0].length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": off the board");
+                return "error";
             }
 
             if (tiles[i][j + 1].tileOpenOnSide("w")) {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j + 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": no path");
+                return "error";
             }
         }
 
         if (dir.equals("w")) {
             if (j == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": off the board");
+                return "error";
             }
 
             if (tiles[i][j - 1].tileOpenOnSide("e")) {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j - 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": no path");
+                return "error";
             }
         }
 
         if (dir.equals("n")) {
             if (i == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": off the board");
+                return "error";
             }
 
             if (tiles[i - 1][j].tileOpenOnSide("s")) {
                 tiles[i][j].removePlayer(player);
                 tiles[i - 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": no path");
+                return "error";
             }
         }
 
         if (dir.equals("s")) {
             if (i == tiles.length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": off the board");
+                return "error";
             }
 
             if (tiles[i + 1][j].tileOpenOnSide("n")) {
                 tiles[i][j].removePlayer(player);
                 tiles[i + 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path.");
-                return "";
+                StdOut.println("Cannot move " + fullDir + ": no path");
+                return "error";
             }
         }
 
@@ -416,6 +416,10 @@ public class GameBoard {
         boardWithNumbers[boardWithNumbers.length - 1] = horiNumbers;
 
         return boardWithNumbers;
+    }
+
+    public boolean[] getFloatingTile(){
+        return floatingTile.toBooleanArray();
     }
 
     public String[] getFloatingTileText() {
