@@ -29,10 +29,6 @@ public class Tile {
     private String[] players;
     private boolean relicActive = false;
 
-    public static void main(String[] args) {
-
-    }
-
     public Tile(String c) {
         tileEncoding = c;
         textRepresentation = new String[3][7];

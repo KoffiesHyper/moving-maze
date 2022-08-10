@@ -101,13 +101,13 @@ public class GameBoard {
         }
 
         if (!tiles[i][j].tileOpenOnSide(dir)) {
-            StdOut.println("Cannot move " + fullDir + ": no path");
+            StdOut.println("Cannot move " + fullDir + ": no path.");
             return "error";
         }
 
         if (dir.equals("e")) {
             if (j == tiles[0].length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "error";
             }
 
@@ -115,14 +115,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j + 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "error";
             }
         }
 
         if (dir.equals("w")) {
             if (j == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "error";
             }
 
@@ -130,14 +130,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i][j - 1].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "error";
             }
         }
 
         if (dir.equals("n")) {
             if (i == 0) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "error";
             }
 
@@ -145,14 +145,14 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i - 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "error";
             }
         }
 
         if (dir.equals("s")) {
             if (i == tiles.length - 1) {
-                StdOut.println("Cannot move " + fullDir + ": off the board");
+                StdOut.println("Cannot move " + fullDir + ": off the board.");
                 return "error";
             }
 
@@ -160,7 +160,7 @@ public class GameBoard {
                 tiles[i][j].removePlayer(player);
                 tiles[i + 1][j].addPlayer(player);
             } else {
-                StdOut.println("Cannot move " + fullDir + ": no path");
+                StdOut.println("Cannot move " + fullDir + ": no path.");
                 return "error";
             }
         }
@@ -207,6 +207,7 @@ public class GameBoard {
                         .parseInt(String.valueOf(tiles[x][y].getTileEncoding().toCharArray()[5])) == playerScore[num]
                                 + 1) {
                     tiles[x][y].setRelic(true);
+                    return;
                 }
             }
         }
@@ -399,7 +400,7 @@ public class GameBoard {
                 gameBoard[i] = rowCounter + gameBoard[i] + rowCounter;
                 rowCounter++;
             } else
-                gameBoard[i] = " " + gameBoard[i] + " ";
+                gameBoard[i] = " " + gameBoard[i];
         }
 
         String horiNumbers = " ";
@@ -412,13 +413,13 @@ public class GameBoard {
 
         for (int i = 0; i < gameBoard.length; i++)
             boardWithNumbers[i + 1] = gameBoard[i];
-        boardWithNumbers[0] = horiNumbers;
-        boardWithNumbers[boardWithNumbers.length - 1] = horiNumbers;
+        boardWithNumbers[0] = horiNumbers + "    ";
+        boardWithNumbers[boardWithNumbers.length - 1] = horiNumbers + "    ";
 
         return boardWithNumbers;
     }
 
-    public boolean[] getFloatingTile(){
+    public boolean[] getFloatingTile() {
         return floatingTile.toBooleanArray();
     }
 
