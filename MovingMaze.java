@@ -110,7 +110,7 @@ public class MovingMaze {
         int player = 1;
         String currentPlayer = "";
         In terminalInput = new In();
-        String previousSlide = "";
+        String previousSlide = " ";
         while (true) {
             switch (player) {
                 case 1:
