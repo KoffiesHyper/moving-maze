@@ -1,25 +1,44 @@
+/**
+ *  Implements the functionality of the games's board
+ *  @author Christian Slier
+ */
 public class GameBoard {
 
-    public static final String BORDER_HORI = "─";
-    public static final String BORDER_VERT = "│";
-    public static final String BORDER_TOPLEFT = "┌";
-    public static final String BORDER_TOPRIGHT = "┐";
-    public static final String BORDER_BOTTOMLEFT = "└";
-    public static final String BORDER_BOTTOMRIGHT = "┘";
-    public static final String BORDER_LEFTEDGE = "├";
-    public static final String BORDER_RIGHTEDGE = "┤";
-    public static final String BORDER_TOPEDGE = "┬";
-    public static final String BORDER_BOTTOMEDGE = "┴";
-    public static final String BORDER_MIDDLE = "┼";
+    private static final String BORDER_HORI = "─";
+    private static final String BORDER_VERT = "│";
+    private static final String BORDER_TOPLEFT = "┌";
+    private static final String BORDER_TOPRIGHT = "┐";
+    private static final String BORDER_BOTTOMLEFT = "└";
+    private static final String BORDER_BOTTOMRIGHT = "┘";
+    private static final String BORDER_LEFTEDGE = "├";
+    private static final String BORDER_RIGHTEDGE = "┤";
+    private static final String BORDER_TOPEDGE = "┬";
+    private static final String BORDER_BOTTOMEDGE = "┴";
+    private static final String BORDER_MIDDLE = "┼";
 
     private Tile[][] tiles;
-    private Tile floatingTile;
-    private String[] gameBoard;
+
+    /**
+     * Floating tile of the game
+     */
+    public Tile floatingTile;
+
+    private String[] gameBoard; 
 
     private int k = 0;
 
     private int[] playerScore = new int[4];
 
+    /**
+     * Constructor for the {@code GameBoard} class
+     * Within the constructor, the initial state of the board is initialized
+     * @param tileEncodings 2D-Array of Strings, representing the tile-encodings for the tiles of the board
+     * @param floatingEncoding representation of the game's starting floating tile
+     * @param x width of the board
+     * @param y height of the board
+     * @param k score to reach in order to win the game
+     * @see Tile
+     */
     public GameBoard(String[][] tileEncodings, String floatingEncoding, int x, int y, int k) {
         tiles = new Tile[y][x];
         char[] characters;
@@ -39,24 +58,53 @@ public class GameBoard {
                     tiles[i][j].addPlayer("B");
 
                 characters = tileEncodings[i][j].toCharArray();
+
                 if (characters[4] != 'x' && characters[5] == '1') {
                     tiles[i][j].setRelic(true);
                 }
             }
         }
 
-        floatingTile = new Tile(floatingEncoding);
+        GUI.initiateWindow(tiles);
+
+        if (floatingEncoding.length() > 0) {
+
+            floatingTile = new Tile(floatingEncoding);
+            char[] ftEncoding = floatingEncoding.toCharArray();
+            if (ftEncoding[4] != 'x' && ftEncoding[5] == '1') {
+                floatingTile.setRelic(true);
+            }
+
+            GUI.passFloatingTile(floatingTile);
+        }
+
         gameBoard = new String[(tiles.length * 3) + (tiles.length + 1)];
     }
 
+    /**
+     * Rotates the floating tile in the direction specified by {@code rotateDir}
+     * Calls the {@code rotate} function on the floating tile's {@code Tile} instance
+     * @param rotateDir direction of rotation
+     * @see Tile#rotate
+     */
     public void rotateFloatingTile(String rotateDir) {
         floatingTile.rotate(rotateDir);
     }
 
+    /**
+     * Used to get the values of the players' scores
+     * @return {@code int[]}
+     */
     public int[] getPlayerScores() {
         return playerScore;
     }
 
+    /**
+     * Determines if {@code player} is on his/her starting tile
+     * @param player the current player's position in the order in which the game is played
+     * @return {@code true} if {@code player} is currently on his/her starting tile
+     * @see playerCurrentPos
+     */
     public boolean playerAtOrigin(int player) {
         int[] pos = { 0, 0 };
 
@@ -78,6 +126,12 @@ public class GameBoard {
         return false;
     }
 
+    /**
+     * Moves {@code player} in the direction specified by {@code dir}
+     * @param player player that is to be moved
+     * @param dir direction in which the player is to be moved
+     * @return {@code String} - result of move: {@code error}/{@code success}/{@code collectedRelic}
+     */
     public String movePlayer(String player, String dir) {
         int[] currentPos = playerCurrentPos(player);
         int i = currentPos[0];
@@ -167,6 +221,42 @@ public class GameBoard {
 
         StdOut.println("Moving " + fullDir + ".");
 
+        return onRelic(player);
+    }
+
+    public void movePlayer(String player, int i, int j){
+        int[] pos = playerCurrentPos(player.charAt(0) + "");
+
+        tiles[pos[0]][pos[1]].removePlayer(player.charAt(0) + "");
+        tiles[j-1][i-1].addPlayer(player.charAt(0) + "");
+    }
+
+    public boolean isPathToTile(String player, int x, int y){
+        int[] pos = playerCurrentPos(player);
+
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                tiles[i][j].checked = false;
+            }
+        }
+
+        return isPathToTile(pos[0], pos[1], tiles[y-1][x-1]);
+    }
+ 
+    public boolean isPathToTile(int i, int j, Tile goal){
+        if(tiles[i][j] == goal) return true;
+
+        tiles[i][j].checked = true;
+
+        if(i != 0 && tiles[i][j].tileOpenOnSide("n") && tiles[i-1][j].tileOpenOnSide("s") && !tiles[i-1][j].checked && isPathToTile(i-1, j, goal)) return true;
+        if(i != tiles.length-1 && tiles[i][j].tileOpenOnSide("s") && tiles[i+1][j].tileOpenOnSide("n") && !tiles[i+1][j].checked && isPathToTile(i+1, j, goal)) return true;
+        if(j != 0  && tiles[i][j].tileOpenOnSide("w") && tiles[i][j-1].tileOpenOnSide("e") && !tiles[i][j-1].checked && isPathToTile(i, j-1, goal)) return true;
+        if(j != tiles[0].length-1 && tiles[i][j].tileOpenOnSide("e") && tiles[i][j+1].tileOpenOnSide("w") && !tiles[i][j+1].checked && isPathToTile(i, j+1, goal)) return true;
+
+        return false;
+    }
+    
+    public String onRelic(String player){
         int x = playerCurrentPos(player)[0];
         int y = playerCurrentPos(player)[1];
         int playerNum = 0;
@@ -197,9 +287,24 @@ public class GameBoard {
         } else {
             return "success";
         }
-
     }
 
+    public void checkAllPlayerRelics(){
+        String[] players = {"Green", "Yellow", "Blue", "Red"};
+
+        for(int i = 0; i < 4; i++){
+            if (onRelic(players[i].charAt(0)+"").equals("collectedRelic")) {
+                System.out.println(players[i] + " has collected a relic.");
+                printScoreBoard();
+            }
+        }
+    }
+
+    /**
+     * Makes the current player's next relic visible
+     * @param player player who's next relic needs to be made active
+     * @param num number that represent the current player
+     */
     private void activateNextRelic(String player, int num) {
         for (int x = 0; x < tiles.length; x++) {
             for (int y = 0; y < tiles[0].length; y++) {
@@ -211,8 +316,23 @@ public class GameBoard {
                 }
             }
         }
+
+        char[] ftEncoding = floatingTile.getTileEncoding().toCharArray();
+
+        if (String.valueOf(ftEncoding[4]).equals(player.toLowerCase())
+                && Integer.parseInt(String.valueOf(ftEncoding[5])) == playerScore[num] + 1) {
+            floatingTile.setRelic(true);
+            return;
+        }
     }
 
+    /**
+     * Determines if a specific tile has a specific player's relic on it
+     * @param x row of the specific tile
+     * @param y column of the specific tile
+     * @param player player who's relic needs to be checked
+     * @return  {@code true} if the tile in position {@code(x, y)} has a relic for {@code player}
+     */
     private boolean hasPlayerRelic(int x, int y, String player) {
         if (String.valueOf(tiles[x][y].getTileEncoding().toCharArray()[4]).equals(player.toLowerCase()))
             return true;
@@ -220,7 +340,13 @@ public class GameBoard {
         return false;
     }
 
-    private int[] playerCurrentPos(String player) {
+    /**
+     * Returns the position of a specific player
+     * Returns an Array of Integers of length 2, containing the x-y value of the player's position
+     * @param player player who's position needs to be returned
+     * @return {@code int[]}
+     */
+    public int[] playerCurrentPos(String player) {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 if (tiles[i][j].hasPlayer(player).equals(player)) {
@@ -234,6 +360,10 @@ public class GameBoard {
         return placeholder;
     }
 
+    /**
+     * Inserts the floating tile in the location indicated by {@code indicator}
+     * @param indicator location in which to insert the floating tile
+     */
     public void insertFloatingTile(String indicator) {
         char insertSide = indicator.charAt(0);
         int pos = Integer.parseInt(String.valueOf(indicator.charAt(1)));
@@ -303,11 +433,19 @@ public class GameBoard {
         }
     }
 
+    /**
+     * Copies data from {@code from} to {@code to}
+     * @param to {@code Tile} to which to copy
+     * @param from {@code Tile} from which to copy 
+     */
     private void copyTileInfo(Tile to, Tile from) {
         to.setRelic(from.getRelic());
         to.setPlayers(from.getPlayers());
     }
 
+    /**
+     * Prints the scoreboard
+     */
     public void printScoreBoard() {
         StdOut.println("Relics collected /" + k + ":");
         StdOut.printf("%-9s", "- Green");
@@ -320,6 +458,9 @@ public class GameBoard {
         StdOut.println(playerScore[3]);
     }
 
+    /**
+     * Prints the game board
+     */
     public void printGameBoard() {
         String[] boardText = getTextRepresentation();
         String[] floatingTile = getFloatingTileText();
@@ -336,6 +477,10 @@ public class GameBoard {
         System.out.println();
     }
 
+    /**
+     * Converts the {@code tiles} array to a 1D-String-Array
+     * @return {@code String[]} containing the lines that need to be printed to display the game board
+     */
     public String[] getTextRepresentation() {
         for (int r = 0; r < gameBoard.length; r++) {
             gameBoard[r] = "";
@@ -373,7 +518,7 @@ public class GameBoard {
                 + gameBoard[gameBoard.length - 1].substring(0, gameBoard[gameBoard.length - 1].length())
                 + BORDER_BOTTOMRIGHT;
 
-        for (int x = 8; x < tiles[0].length * 7 - 1; x += 8) {
+        for (int x = 8; x < tiles[0].length * 8 - 1; x += 8) {
             for (int y = 0; y < gameBoard.length; y++) {
                 String edgeSymbol = y == gameBoard.length - 1 ? BORDER_BOTTOMEDGE
                         : (y == 0 ? BORDER_TOPEDGE : BORDER_VERT);
@@ -418,11 +563,20 @@ public class GameBoard {
 
         return boardWithNumbers;
     }
-
+    
+    /**
+     * Returns a boolean array, indicating if the {@code floatingTile} is open to any side
+     * 1st element represents North, 2nd element represents west, etc.
+     * @return {@code boolean[]}
+     */
     public boolean[] getFloatingTile() {
         return floatingTile.toBooleanArray();
     }
 
+    /**
+     * Converts the {@code floatingTile} to a 1D-String-Array
+     * @return {@code String[]} containing the lines that need to be printed to display the floating tile
+     */
     public String[] getFloatingTileText() {
         String[] lines = new String[5];
 
@@ -433,6 +587,15 @@ public class GameBoard {
         lines[0] = "┌───────┐";
         lines[4] = "└───────┘";
 
+        char[] characters = lines[2].toCharArray();
+        characters[4] = floatingTile.getTileCharacter().charAt(0);
+
+        lines[2] = String.valueOf(characters);
+
         return lines;
+    }
+
+    public void refreshGUI(){
+        GUI.refreshWindow(playerScore);
     }
 }

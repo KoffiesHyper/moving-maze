@@ -18,7 +18,7 @@ rm -rf *.class
 
 # Compile all .java files
 greenecho "Compiling..."
-javac -encoding utf8 *.java
+javac *.java
 greenecho "Compiled successfully."
 
 # Don't exit if a single test case has issues

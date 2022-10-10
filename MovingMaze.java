@@ -4,24 +4,24 @@
  * Student number: 26105802
  */
 
+/**
+ * Top-level class that facilitates the entire game
+ * 
+ * @author Christian Slier
+ */
 public class MovingMaze {
-
-    // ==========================================================
-    // Constants
-    // ==========================================================
 
     public static GameBoard board;
 
-    static int k = 0;
+    public static int k = 0;
 
-    // ==========================================================
-    // Main function
-    // ==========================================================
-
+    /**
+     * Main function which initiates the start of the game with the given
+     * {@code args}
+     * 
+     * @param args command-line arguments entered
+     */
     public static void main(String[] args) {
-        // args[0] will contain the filename of the game board file to be loaded.
-        // args[1] will contain either "text" or "gui".
-
         In file = new In("./" + args[0]);
 
         int x = file.readInt();
@@ -32,14 +32,15 @@ public class MovingMaze {
         String[][] tileEncodings = extractGameBoard(file, x, y);
 
         board = new GameBoard(tileEncodings, floatingTileEncoding, x, y, k);
+        GUI.passBoard(board);
+        UserInput input = new UserInput();
+        input.start();
         startPromptCycle();
     }
 
     // ==========================================================
     // Test API functions
     // ==========================================================
-
-    // Populate these with high-level code that references your codebase.
 
     public static boolean isTileOpenToSide(String tileEncoding, char dir) {
         Tile tile = new Tile(tileEncoding);
@@ -61,8 +62,8 @@ public class MovingMaze {
     public static boolean[] slideTileIntoMaze1(String[][] mazeTileEncodings, String floatingTileEncoding,
             String slidingIndicator) {
 
-        GameBoard board = new GameBoard(mazeTileEncodings, floatingTileEncoding, mazeTileEncodings.length,
-                mazeTileEncodings[0].length, 10);
+        GameBoard board = new GameBoard(mazeTileEncodings, floatingTileEncoding, mazeTileEncodings[0].length,
+                mazeTileEncodings.length, 10);
         board.insertFloatingTile(slidingIndicator);
         return board.getFloatingTile();
     }
@@ -77,8 +78,8 @@ public class MovingMaze {
     public static boolean canMoveAlongPath(String[][] mazeTileEncodings, char[] steps) {
         GameBoard board = new GameBoard(
                 mazeTileEncodings, "",
-                mazeTileEncodings.length,
                 mazeTileEncodings[0].length,
+                mazeTileEncodings.length,
                 1);
 
         for (int i = 0; i < steps.length; i++) {
@@ -92,18 +93,26 @@ public class MovingMaze {
     // Second hand-in
 
     public static boolean tileHasRelic(String tileEncoding) {
-        return false; // TODO
+        Tile tile = new Tile(tileEncoding);
+        return tile.hasRelic();
     }
 
     public static char slideTileIntoMaze2(String[][] mazeTileEncodings, String floatingTileEncoding,
             String slidingIndicator) {
-        return '?'; // TODO
+        GameBoard board = new GameBoard(mazeTileEncodings, floatingTileEncoding, mazeTileEncodings[0].length,
+                mazeTileEncodings.length, 10);
+        board.insertFloatingTile(slidingIndicator);
+        return board.floatingTile.getTileEncoding().toCharArray()[4];
     }
 
     // ----------------------------------------------------------
     // First hand-in
 
+    /**
+     * Starts an endless loop turns, untill the game is terminated
+     */
     public static void startPromptCycle() {
+
         printStartBanner(k);
         board.printGameBoard();
 
@@ -128,6 +137,7 @@ public class MovingMaze {
             }
 
             while (true) {
+                board.refreshGUI();
                 System.out.println("[" + currentPlayer + "] Rotate and slide the floating tile: ");
                 System.out.print("> ");
 
@@ -157,16 +167,36 @@ public class MovingMaze {
                 } else {
                     System.out.println("Inserting at " + input + ".");
                     board.insertFloatingTile(input);
+                    board.checkAllPlayerRelics();
                     board.printGameBoard();
                     break;
                 }
             }
 
             while (true) {
+                board.refreshGUI();
                 System.out.println("[" + currentPlayer + "] Move your adventurer: ");
                 System.out.print("> ");
 
                 String input = terminalInput.readString();
+
+                if(input.contains(",")){
+                    int x = Integer.parseInt(input.split(",")[0]);
+                    int y = Integer.parseInt(input.split(",")[1]);
+
+                    
+                    if(board.isPathToTile(currentPlayer.charAt(0) + "", x, y)){
+                        board.movePlayer(currentPlayer, x, y);
+                        board.checkAllPlayerRelics();
+                        board.printGameBoard();
+                        continue;
+                    }
+                    else {
+                        System.out.println("Cannot move to " + x + "," + y + ": no path.");
+                        continue;
+                    }
+
+                }
 
                 if (input.equals("quit")) {
                     System.out.println("Game has been quit.");
@@ -210,7 +240,14 @@ public class MovingMaze {
                 player = 1;
         }
     }
-
+ 
+    /**
+     * Provides the exact opposite sliding move than {@code input}
+     * 
+     * @param input sliding move which opposite is returned
+     * @return {@code String} storing the value of the opposite move of
+     *         {@code input}
+     */
     public static String oppositeSlide(String input) {
         char[] characters = input.toCharArray();
         char dir = characters[0];
@@ -229,6 +266,11 @@ public class MovingMaze {
         return "";
     }
 
+    /**
+     * Prints the banner at the start of the game
+     * 
+     * @param k score of for the players
+     */
     public static void printStartBanner(int k) {
         System.out.println(dashes());
         System.out.println("Moving Maze");
@@ -236,6 +278,15 @@ public class MovingMaze {
         System.out.println(dashes());
     }
 
+    /**
+     * Reads in the data for the board's tile encodings, and converts it to a
+     * {@code String[][]}
+     * 
+     * @param file file from which to read tile encodings
+     * @param x    width of the board
+     * @param y    height of the board
+     * @return {@code String[][]} containing the tile encodings of the board
+     */
     public static String[][] extractGameBoard(In file, int x, int y) {
         String[][] gameBoard = new String[y][x];
 
@@ -259,6 +310,11 @@ public class MovingMaze {
         return gameBoard;
     }
 
+    /**
+     * Returns a string of dashed for use in the starting banner of the game
+     * 
+     * @return {@code String} of 50 {@code -} characters
+     */
     public static String dashes() {
         String d = "";
 

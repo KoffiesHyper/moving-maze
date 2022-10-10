@@ -14,10 +14,10 @@ rm -rf *.class
 
 # Compile all .java files
 myecho "Compiling..."
-javac -encoding utf8 *.java
+javac *.java
 myecho "Compiled successfully."
 
 myecho "Start of output comparison (your program's output is on the left, the correct output is on the right)"
 
 # Run the main file with the arguments of the provided test case, and compare its output with the true output
-java MovingMaze boards/board$1.txt text < moves/moves$1.txt | diff -u -s --strip-trailing-cr --label "Your output" - outputs/output$1.txt
+java MovingMaze boards/board$1.txt text < moves/moves$1.txt | diff -Z -s --strip-trailing-cr --label "Your output" - outputs/output$1.txt

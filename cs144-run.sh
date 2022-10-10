@@ -14,7 +14,7 @@ rm -rf *.class
 
 # Compile all .java files
 myecho "Compiling..."
-javac -encoding utf8 *.java
+javac *.java
 myecho "Compiled successfully."
 
 # Report as starting
